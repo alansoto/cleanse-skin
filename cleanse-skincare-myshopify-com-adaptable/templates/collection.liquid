@@ -1,0 +1,52 @@
+{% paginate collection.products by settings.products_per_page %}
+
+<!-- Begin content -->
+<div id="content">
+
+	<!--<h1 class="title">{{ collection.title | escape }}</h1>-->
+	{% if collection.description.size > 0 %}
+	<div id="excerpt" class="formatted">{{ collection.description }}</div>
+	{% endif %}
+	
+	{% if collection.products.size > 0 %}
+	
+		<div class="product-list">
+			{% for product in collection.products %}
+		
+			<div class="product{% cycle ' clear', '', '', '' %}">
+				{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+				<div class="product-overlay"><a href="{{ product.url | within: collection }}"></a></div>
+				<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ product.url | within: collection }}"><img src="{{ product.images[0] | product_img_url: settings.product_image_style }}" alt="{{ product.title | escape }}" /></a></td></tr></table></div>
+				<ul class="product-details">
+					<li class="product-details-title"><h3><a href="{{ product.url | within: collection }}">{{ product.title | escape }}</a></h3></li>
+					<li class="product-details-price">
+						{% if product.compare_at_price_max > product.price %}<s>{{ product.compare_at_price_max | money }}</s>{% endif %} 
+						{{ product.price | money }}{% if settings.product_range %}{% if product.price_varies %} - {{ product.price_max | money }}{% endif %}{% endif %}
+					</li>
+				</ul>
+			</div>
+			
+			{% cycle '', '', '', '<div class="clear"></div>' %}
+
+			{% endfor %}
+		</div>
+		<div class="clear"></div>
+	
+	{% else %}
+	
+		<p id="empty"><em>There are no products in this collection.</em></p>
+	
+	{% endif %}
+	
+	{% if paginate.pages > 1 %}
+		<div id="paginate-wrapper"><div id="paginate">
+			{{ paginate | default_pagination }}
+		</div></div>
+	{% endif %}
+	
+</div>
+<!-- End content -->
+	
+
+
+{% endpaginate %}

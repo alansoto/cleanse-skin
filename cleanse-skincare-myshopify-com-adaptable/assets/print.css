@@ -1,0 +1,7 @@
+body, #footer {
+	background: none;
+}
+
+.product-overlay, #related {
+	display: none;
+}

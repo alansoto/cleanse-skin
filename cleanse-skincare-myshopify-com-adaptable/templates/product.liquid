@@ -1,0 +1,115 @@
+<!-- Begin content -->
+<div id="content">
+
+	<!-- Begin product-details-left -->
+	<div id="product-details-left">
+		
+		<div id="image">
+            {% if settings.product_image_zoom %}<a id="image-zoom" href="{{ product.images[0] | product_img_url: "grande" }}" title="{{ image.alt | escape }}"></a>{% endif %}
+			<table cellspacing="0"><tr><td><img src="{{ product.images[0] | product_img_url: "large" }}" alt="{{ image.alt | escape }}" /></td></tr></table>
+		</div>
+		{% if product.images.size > 1 %}
+		<div id="thumbs">
+			<div id="thumbs-tabled">
+                <table cellspacing="0"{% if product.images.size == 2 %} style="width: 66%; margin: 0 auto"{% endif %}>
+				{% for image in product.images %}
+                    {% cycle '<tr>', '', '' %}
+					<td><div{% if forloop.first %} class="active"{% endif %}><a href="{{ image | product_img_url: "large" }}" title="{{ image.alt | escape }}" rel="product-thumbs"><img src="{{ image | product_img_url: "small" }}" alt="{{ image.alt | escape }}" /></a></div></td>
+                    {% unless forloop.last %}{% cycle '', '', '</tr>' %}{% endunless %}
+				{% endfor %}
+				</tr></table>
+            </div>
+		</div>
+		{% endif %}
+
+        {% for image in product.images %}
+        	<a class="thumb-hidden" rel="thumb-hidden" href="{{ image | product_img_url: "grande" }}"><img src="{{ image | product_img_url: "small" }}" alt="{{ image.alt | escape }}" /></a>
+        {% endfor %}
+        <script type="text/javascript">
+        $("a.thumb-hidden").fancybox({
+    	    'hideOnContentClick': true
+	    });
+        $("#image-zoom").click(function() {
+            $("a.thumb-hidden[href='" + $(this).attr("href") + "']").click();
+            return false;
+        });
+        </script>
+		
+	</div>
+	<!-- End product-details-left -->
+	
+	<!-- Begin product-details-right -->
+	<div id="product-details-right">
+
+		<h1>{{ product.title | escape }}{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}</h1>
+
+		<div id="product-actions">
+			<form method="post" action="/cart/add">
+				<!-- START BUY -->
+				<div id="buy" class="clear">
+					{% if product.available %}
+						<h2 id="price">{% if product.compare_at_price_max > product.price %}<del>{{ product.compare_at_price_max | money }}</del>&nbsp; {% endif %}<span>{{ product.price | money }}</span></h2>
+						{% if product.variants.size > 1 %}
+							<div id="variants">
+									<div class="border">
+										<select name="id" id="id">{% for variant in product.variants %}{% if variant.available %}
+											<option value="{{ variant.id }}">{{ variant.title | escape }} ({{ variant.price | money }})</option>{% else %}
+											<option value="{{ variant.id }}" disabled="disabled">{{ variant.title | escape }} ({{ variant.price | money }}) - SOLD OUT</option>{% endif %}{% endfor %}
+										</select>
+									</div>
+								<div class="clear"></div>
+							</div>
+							<div class="variant-bg">
+								<div class="button-wrapper"><input type="submit" class="button" value="Add to Cart" id="add" /></div>
+							</div>
+							<div class="ajax-view-cart"><a href="/cart">View Cart</a></div>
+						{% else %}
+							{% for variant in product.variants %}
+								<input type="hidden" name="id" id="id" value="{{ variant.id }}" />
+							{% endfor %}
+							<div class="button-wrapper"><input type="submit" class="button" value="Add to Cart" id="add" /></div>
+							<div class="ajax-view-cart"><a href="/cart">View Cart</a></div>
+						{% endif %}
+						<div class="clear"></div>
+					{% else %}
+						<h3 class="sold-out">Sold Out</h6>
+					{% endif %}
+				</div>
+
+        <!-- start: quantity -->
+        <label for="quantity">Qty: </label>
+        <select id="quantity" name="quantity">
+        {% for i in (1..10) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+        </select>
+          <!-- end: quantity -->
+
+				<!-- END BUY -->
+			</form>
+		</div>
+
+		<div id="desc" class="formatted">
+			{{ product.description }}
+		</div>
+		
+		{% if settings.social_product_links %}
+		<div id="product-social">
+			<ul>
+            	<li><iframe src="http://www.facebook.com/plugins/like.php?href={{ shop.url }}/products/{{ product.handle }}&amp;layout=button_count&amp;show_faces=true&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=31" scrolling="none" frameborder="0" style="border:none; overflow:hidden; width:200px; height:31px; display:block;" allowTransparency="true"></iframe></li>
+				<li><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" {% if settings.twitter %} data-via="{{ settings.twitter }}"{% endif %}>Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+ 			</ul>
+		</div>
+		{% endif %}
+		
+	</div>
+	<!-- End product-details-right -->
+
+	{% if settings.show_related %}
+		{% include "related" %}
+	{% endif %}
+	
+	<div class="clear"></div>
+
+</div>
+<!-- End content -->

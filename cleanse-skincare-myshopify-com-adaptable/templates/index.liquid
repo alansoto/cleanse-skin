@@ -1,0 +1,87 @@
+{% if settings.homepage_banner_1_enabled or settings.homepage_banner_2_enabled or settings.homepage_banner_3_enabled or settings.homepage_banner_4_enabled or settings.homepage_banner_5_enabled  %}
+
+    <!-- Begin banner -->
+	<div id="banner-pager-wrapper"><ul id="banner-pager"></ul></div>
+	<div id="banner"{% if settings.homepage_promos %}{% else %} style="margin: 0 0 29px 0"{% endif %}>
+		{% if settings.homepage_banner_1_enabled %}<div>{% if settings.homepage_banner_1_url.size > 0 %}<a href="{{ settings.homepage_banner_1_url }}">{% endif %}<img src="{{ 'homepage_banner_1_img.jpg' | asset_url }}" />{% if settings.homepage_banner_1_url.size > 0 %}</a>{% endif %}</div>{% endif %}
+		{% if settings.homepage_banner_2_enabled %}<div>{% if settings.homepage_banner_2_url.size > 0 %}<a href="{{ settings.homepage_banner_2_url }}">{% endif %}<img src="{{ 'homepage_banner_2_img.jpg' | asset_url }}" />{% if settings.homepage_banner_2_url.size > 0 %}</a>{% endif %}</div>{% endif %}
+		{% if settings.homepage_banner_3_enabled %}<div>{% if settings.homepage_banner_3_url.size > 0 %}<a href="{{ settings.homepage_banner_3_url }}">{% endif %}<img src="{{ 'homepage_banner_3_img.jpg' | asset_url }}" />{% if settings.homepage_banner_3_url.size > 0 %}</a>{% endif %}</div>{% endif %}
+		{% if settings.homepage_banner_4_enabled %}<div>{% if settings.homepage_banner_4_url.size > 0 %}<a href="{{ settings.homepage_banner_4_url }}">{% endif %}<img src="{{ 'homepage_banner_4_img.jpg' | asset_url }}" />{% if settings.homepage_banner_4_url.size > 0 %}</a>{% endif %}</div>{% endif %}
+		{% if settings.homepage_banner_5_enabled %}<div>{% if settings.homepage_banner_5_url.size > 0 %}<a href="{{ settings.homepage_banner_5_url }}">{% endif %}<img src="{{ 'homepage_banner_5_img.jpg' | asset_url }}" />{% if settings.homepage_banner_5_url.size > 0 %}</a>{% endif %}</div>{% endif %}
+	</div>
+	<script type="text/javascript">
+	// Banner Theme Settings
+	var banner_effect = "{{ settings.banner_effect }}";
+	var banner_transition_speed = {{ settings.banner_transition_speed }};
+	var banner_pause = {{ settings.banner_pause }};
+	</script>
+	<!-- End banner -->
+
+{% endif %}
+
+{% if settings.homepage_promos %}
+
+	<!-- Begin promos -->
+	<div id="promos">
+		<table cellspacing="0">
+		<tbody><tr>
+			<td class="promo-1">{% if settings.homepage_promo_1_url.size > 0 %}<a href="{{ settings.homepage_promo_1_url }}">{% endif %}<img src="{{ 'homepage_promo_1_img.jpg' | asset_url }}" />{% if settings.homepage_promo_1_url.size > 0 %}</a>{% endif %}</td>
+			<td class="promo-2">{% if settings.homepage_promo_2_url.size > 0 %}<a href="{{ settings.homepage_promo_2_url }}">{% endif %}<img src="{{ 'homepage_promo_2_img.jpg' | asset_url }}" />{% if settings.homepage_promo_2_url.size > 0 %}</a>{% endif %}</td>
+			<td class="promo-3">{% if settings.homepage_promo_3_url.size > 0 %}<a href="{{ settings.homepage_promo_3_url }}">{% endif %}<img src="{{ 'homepage_promo_3_img.jpg' | asset_url }}" />{% if settings.homepage_promo_3_url.size > 0 %}</a>{% endif %}</td>
+		</tr></tbody>
+		</table>
+	</div>
+	<!-- End promos -->
+
+{% endif %}
+
+{% if settings.homepage_welcome %}
+<!-- Begin content -->
+<div id="content" class="formatted" style="padding-bottom: 5px">
+	{{ pages[settings.homepage_welcome_page].content }}
+</div>
+<!-- End content -->
+{% endif %}
+	
+
+{% if settings.homepage_products %}
+
+<!-- Begin content -->
+<div id="content">
+	
+	{% if settings.text_featured.size > 0 %}<h1>{{ settings.text_featured | escape }}{% endif %}</h1>
+
+	{% if collections.frontpage.products.size > 0 %}
+	
+		<div class="product-list">
+			{% for product in collections.frontpage.products limit: settings.homepage_product_limit %}
+	
+			<div class="product{% cycle ' clear', '', '', '' %}">
+				{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+				<div class="product-overlay"><a href="{{ product.url | within: collection }}"></a></div>
+				<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ product.url | within: collection }}"><img src="{{ product.images[0] | product_img_url: settings.product_image_style }}" alt="{{ product.title | escape }}" /></a></td></tr></table></div>
+				<ul class="product-details">
+					<li class="product-details-title"><h3><a href="{{ product.url | within: collection }}">{{ product.title | escape }}</a></h3></li>
+					<li class="product-details-price">
+						{% if product.compare_at_price_max > product.price %}<s>{{ product.compare_at_price_max | money }}</s>{% endif %} 
+						{{ product.price | money }}{% if settings.product_range %}{% if product.price_varies %} - {{ product.price_max | money }}{% endif %}{% endif %}
+					</li>
+				</ul>
+			</div>
+			
+			{% cycle '', '', '', '<div class="clear"></div>' %}
+			
+			{% endfor %}
+		</div>
+		<div class="clear"></div>
+	
+	{% else %}
+	
+		<p><a href="/admin/custom_collections">Add a product to the "frontpage" collection to see it here.</a></p>
+	
+	{% endif %}
+	
+</div>
+<!-- End content -->
+
+{% endif %}

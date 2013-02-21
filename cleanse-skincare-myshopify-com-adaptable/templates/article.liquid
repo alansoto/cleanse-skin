@@ -1,0 +1,119 @@
+{% paginate article.comments by 25 %}
+
+<!-- Begin blog -->
+<div id="blog">
+	
+	<div id="sidebar">
+
+		<h3>Recent Articles</h3>
+		
+		{% if blogs.[blog.handle].articles.size > 0 %}
+			{% for article in blogs.[blog.handle].articles limit: 6 %}
+				<div class="post-excerpt{% if forloop.last %} end{% endif %}">
+					<h5><a href="{{ article.url }}">{{ article.title | escape }}</a></h5>
+					<p>{{ article.content | strip_html | strip_newlines | truncate: 80 }}</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			<p>No articles.</p>
+		{% endif %}
+		<p id="feed"><a href="{{ shop.url }}/blogs/{{ blog.handle }}.atom">Subscribe to our RSS Feed</a></p>
+
+	</div>
+	
+	<div id="posts">
+
+		<!-- START ENTRY {{ forloop.index }} -->
+		<div class="post entry">
+			<h2 class="title">{{ article.title | escape }}</h2>
+			<h5 class="posted">
+				Posted {% if settings.blog_display_author %}by {{ article.author }} {% endif %}on {{ article.published_at | date: "%B %d, %Y" }} <span> 
+				{% if article.tags.size > 0 %}<span class="divider">|</span> Posted under {% for tag in article.tags %} <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %},{% endunless %}{% endfor %}{% endif %}
+				{% if blog.comments_enabled? %}<span class="divider">|</span> <a href="{{ article.url }}{% if blog.comments_enabled? %}#comments{% endif %}">{{ article.comments_count }} {{ article.comments_count | pluralize: "Comment", "Comments" }}</a></span>{% endif %}
+			</h5>
+			<div class="formatted">{{ article.content }}</div>
+			
+			{% if settings.social_blog_links %}
+			<div id="product-social">
+				<ul>
+	            	<li><iframe src="http://www.facebook.com/plugins/like.php?href={{ shop.url }}/products/{{ product.handle }}&amp;layout=button_count&amp;show_faces=true&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px; display:block;" allowTransparency="true"></iframe></li>
+					<li><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="shopify" data-related="shopify:Ecommerce made easy">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+	 			</ul>
+	 			<div class="clear"></div>
+			</div>
+			{% endif %}
+		</div>
+		<!-- END ENTRY -->
+		
+		{% if blog.comments_enabled? or article.comments.size > 0 %}
+
+			<!-- START COMMENTS -->
+			<div id="comments">
+			
+			{% if article.comments.size > 0 %}
+			
+				<div class="post">
+				<h2>{{ article.comments_count }} {{ article.comments_count | pluralize: "Comment", "Comments" }}</span></h2>
+				{% for comment in article.comments %}
+					<div class="comment{% if forloop.first %} start{% endif %}{% if forloop.last %} end{% endif %} {% cycle "odd", "even" %}">
+						{{ comment.content }}
+						<h6 class="author">Posted by {{ comment.author }} on {{ comment.created_at | date: "%B %d, %Y" }}</h6>
+					</div>
+				{% endfor %}
+				{% if paginate.pages > 1 %}
+					<br /><br />
+						<div id="paginate-wrapper">
+							<div id="paginate">
+								{{ paginate | default_pagination }}
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				</div>
+				
+			
+			{% endif %}
+			
+			{% if blog.comments_enabled? %}
+			
+				<div class="post">
+				<h2 class="post-comment">Leave a Comment</h2>
+				
+					<div class="comment-form-wrapper">
+					{% form article %}
+					
+						{% if form.posted_successfully? %}{% if blog.moderated? %}
+							<p id="posted">Successfully posted and awaiting approval by moderator.</p>
+						{% endif %}{% endif %}
+						{% if form.errors %}
+							<p id="error">Not all the fields have been filled out correctly!</p>
+						{% endif %}
+					
+						<label for="comment_author"{% if form.errors contains "author" %} class="error"{% endif %}>Name</label>
+						<input type="text" id="comment_author" name="comment[author]" value="{{ form.author }}" class="field{% if form.errors contains "author" %} error{% endif %}" /><br />
+						<label for="comment_email"{% if form.errors contains "email" %} class="error"{% endif %}>Email Address</label>
+						<input type="text" id="comment_email" name="comment[email]" value="{{ form.email }}" class="field{% if form.errors contains "email" %} error{% endif %}" /><br />
+						<label for="comment_body"{% if form.errors contains "body" %} class="error"{% endif %}>Comment</label>
+						<textarea id="comment_body" name="comment[body]" cols="" rows=""{% if form.errors contains "body" %} class="error"{% endif %}>{{ form.body }}</textarea><br />
+						
+						<div class="button-wrapper"><input type="submit" class="button" value="Post Comment" /></div>
+						
+						<div class="clear"></div>
+	
+					{% endform %}
+					</div>
+				</div>
+				
+			{% endif %}
+			
+			</div>
+			<!-- END COMMENTS -->
+			
+		{% endif %}
+		
+	</div>
+
+</div>
+<!-- End blog -->
+
+{% endpaginate %}

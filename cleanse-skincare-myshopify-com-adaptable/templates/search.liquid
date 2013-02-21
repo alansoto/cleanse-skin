@@ -1,0 +1,81 @@
+{% paginate search.results by 12 %}
+
+<!-- Begin content -->
+<div id="content">
+	
+	<h1>Search</h1>
+	<div id="search-search">
+		<form action="/search" method="get">
+			<input type="text" name="q" id="q"{% if search.performed %} value="{{ search.terms | escape | downcase }}"{% endif %} /> 
+			<input type="image" src="{{ "search.png" | asset_url }}" class="submit" name="search-button" width="24" height="23" alt="Submit" />
+		</form>
+	</div>
+	
+	<div id="search-results">
+	
+	{% if search.results == empty %}
+		
+		{% if search.terms == null %}
+			<p id="empty"><em>Enter your search terms above.</em></p>
+		{% else %}
+			<p id="empty"><em>Your search for "{{ search.terms | escape | downcase }}" did not yield any results.</em></p>
+		{% endif %}
+		
+	{% else %}
+		
+		<div class="product-list">
+			
+			{% for item in search.results %}
+
+				{% if item.featured_image %}
+
+					<div class="product{% cycle ' clear', '', '', '' %}">
+						{% if item.compare_at_price_max > item.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+						<div class="product-overlay"><a href="{{ item.url | within: collection }}"></a></div>
+						<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ item.url | within: collection }}"><img src="{{ item.images[0] | product_img_url: settings.product_image_style }}" alt="{{ item.title | escape }}" /></a></td></tr></table></div>
+						<ul class="product-details">
+							<li class="product-details-title"><h3><a href="{{ item.url | within: collection }}">{{ item.title | escape }}</a></h3></li>
+							<li class="product-details-price">
+								{% if item.compare_at_price_max > item.price %}<s>{{ item.compare_at_price_max | money }}</s>{% endif %} 
+								{{ item.price | money }}
+							</li>
+						</ul>
+					</div>
+				
+				{% else %}
+
+					<div class="content formatted">
+						<h3><a href="{{ item.url }}">{{ item.title | escape | truncate: 25 }}</a></h3>
+						<div class="desc">
+							<div class="bg">
+								<p>{{ item.content | strip_html | strip_newlines | truncate: 320 | highlight: search.terms }}</p>
+							</div>
+						</div>
+						<p><a href="{{ item.url }}">Read More &raquo;</a></p>
+					</div>
+					
+				{% endif %}
+			
+			{% endfor %}
+			
+			<div class="clear"></div>
+			
+		</div>
+		
+		{% if paginate.pages > 1 %}
+		<div id="paginate-wrapper">
+			<div id="paginate">
+				{{ paginate | default_pagination }}
+			</div>
+		</div>
+		{% endif %}
+	
+	{% endif %}
+	
+	</div>
+
+
+</div>
+<!-- End content -->
+
+{% endpaginate %}

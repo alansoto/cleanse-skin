@@ -1,0 +1,39 @@
+<!-- Begin content -->
+<div id="content">
+
+	<h1 class="title">Product Collections</h1>
+	
+	{% if collections.size > 1 %}
+	
+		<div class="product-list">
+  			{% for collection in collections %}
+			{% unless collection.handle == 'frontpage' %}
+				
+				{% capture collection_title %}{{ collection.title | escape }}{% endcapture %}
+				<div class="product{% cycle ' clear', '', '', '' %}">
+					<div class="product-overlay"><a href="{{ collection.url }}" title="Browse our {{ collection_title }} collection"></a></div>
+					<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ collection.url }}" title="Browse our {{ collection_title }} collection">{{ collection.products.first.featured_image | product_img_url: settings.product_image_style | img_tag: collection_title }}</a></td></tr></table></div>
+					<ul class="product-details">
+						<li class="product-details-title"><h3><a href="{{ collection.url }}" title="Browse our {{ collection_title }} collection">{{ collection.title | escape }}</a></h3></li>
+						<li class="product-details-price">
+							{{ collection.all_products_count }} {{ collection.all_products_count | pluralize: 'item', 'items' }}
+						</li>
+					</ul>
+				</div>
+
+				{% cycle '', '', '', '<div class="clear"></div>' %}
+			
+			{% endunless %}
+			{% endfor %}
+		</div>
+		<div class="clear"></div>
+	
+	{% else %}
+	
+		<p id="empty"><em>There are no collections in this store.</em></p>
+	
+	{% endif %}
+	
+</div>
+<!-- End content -->
+

@@ -1,0 +1,72 @@
+{% paginate blog.articles by 10 %}
+
+<!-- Begin blog -->
+<div id="blog">
+
+	<div id="sidebar">
+
+		<h3>Recent Articles</h3>
+
+		{% capture blog_handle %}{% if template == "page" %}news{% else %}{{ blog.handle }}{% endif %}{% endcapture %}
+		
+		{% if blogs.[blog_handle].articles.size > 0 %}
+			{% for article in blogs.[blog_handle].articles limit: 6 %}
+				<div class="post-excerpt{% if forloop.last %} end{% endif %}">
+					<h5><a href="{{ article.url }}">{{ article.title | escape }}</a></h5>
+					<p>{{ article.content | strip_html | strip_newlines | truncate: 80 }}</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			<p>No articles.</p>
+		{% endif %}
+		<p id="feed"><a href="{{ shop.url }}/blogs/{{ blog_handle }}.atom">Subscribe to our RSS Feed</a></p>
+
+	</div>
+	
+	<div id="posts">
+
+	{% if current_tags %}
+		<div id="category" class="formatted"><h3><span>Posts filed under:</span> <em>{{ current_tags.first }}</em></h3></div>
+	{% endif %}
+
+	{% for article in blog.articles %}
+
+		<div class="post entry{% if forloop.first %} start{% endif %}{% if forloop.last %} end{% endif %}">
+			
+			<h2 class="title"><a href="{{ article.url }}">{{ article.title | escape }}</a></h2>
+			<h5 class="posted">
+				Posted {% if settings.blog_display_author %}by {{ article.author }} {% endif %}on {{ article.published_at | date: "%B %d, %Y" }} <span> 
+				{% if article.tags.size > 0 %}<span class="divider">|</span> Posted under {% for tag in article.tags %} <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %},{% endunless %}{% endfor %}{% endif %}
+				{% if blog.comments_enabled? %}<span class="divider">|</span> <a href="{{ article.url }}{% if blog.comments_enabled? %}#comments{% endif %}">{% if article.comments_count == 0 %}Leave a Comment{% else %}{{ article.comments_count }} {{ article.comments_count | pluralize: "Comment", "Comments" }}{% endif %}</a></span>{% endif %}
+			</h5>
+			{% if article.excerpt.size > 0 %}
+  				<div class="formatted">{{ article.excerpt }}</div>
+			{% else %}
+				{% if settings.blog_excerpts_only %}
+					<div class="formatted">{{ article.content | truncatewords: 80 }}</div>
+				{% else %}
+					<div class="formatted">{{ article.content }}</div>
+				{% endif %}
+			{% endif %}
+			<div class="button-wrapper"><input type="button" class="button" name="checkout" value="Read More &raquo;" onclick="location.href='{{ article.url }}';"></div>
+			<div class="clear"></div>
+		</div>
+
+	{% endfor %}
+	
+	</div>
+	
+	{% if paginate.pages > 1 %}
+	<div class="post">
+		<div id="paginate-wrapper">
+			<div id="paginate">
+				{{ paginate | default_pagination }}
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
+</div>
+<!-- End blog -->
+
+{% endpaginate %}

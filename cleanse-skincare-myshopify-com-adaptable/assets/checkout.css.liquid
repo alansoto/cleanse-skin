@@ -1,0 +1,136 @@
+/* Background
+================================================================================================================== */
+{% if settings.bg_current == "custom" %}
+	{% if settings.bg_image == "enabled" %}
+		body {
+			background: {{ settings.bg_color }} url('bg-custom.jpg') {{ settings.bg_repeat }} top center;
+		}
+	{% else %}
+		body {
+			background-image: none;
+			background-color: {{ settings.bg_color }};
+		}
+	{% endif %}
+{% else %}
+	body {
+		background: #f4f4f4 url('bg.jpg');
+	}
+{% endif %}
+
+
+
+/* Undo background and gradiant */
+#main, #container {
+  background: none !important;
+}
+
+#header {
+	padding: 0;
+	background: #fff;
+	width: 776px;
+	margin: 0 13px;
+}
+
+#overview, 
+#email, .group {
+	background: #fff !important;
+	border: none;
+	padding: 30px;
+}
+#content {
+	padding: 0;
+}
+
+#email {
+	margin-top: 20px;
+}
+
+
+#buttons {
+	background-color: {{ settings.primary_color }};
+	color: #fff;	
+}
+#buttons a {
+	color: #fff;
+}
+
+#products {
+	width: 440px;
+}
+#wallet {
+	margin-left: 455px;
+}
+
+
+
+/* Undo overview background and borders */
+#main #overview {
+	border: none;
+  	background: #fff;
+  	padding: 30px;
+}
+#main #overview > * {
+  border: none;
+}
+#main #thumbs div {
+  border: none;
+}
+
+#footer {
+	background: #fff !important;
+	margin: 20px 13px 0;
+	width: 776px;
+	padding: 1px 0;
+}
+
+{% if settings.logo == "enabled" %}
+	/* Insert your own logo (upload separatly) */
+	#logo { 
+	  height: 150px;
+	  background: url('logo.png') 20px 20px no-repeat;
+	}
+	#tagline {
+	  overflow: hidden;
+	  height: 1px;
+	  background: #eee;
+	  margin: 0 30px;
+	  padding: 0 !important;
+	}
+
+{% else %}
+
+	#tagline .title {
+		display: block;
+		font-size: 30px;
+	}
+	#tagline .subtitle {
+		display: block;
+		padding-top: 5px;
+		font-size: 16px;
+		font-weight: normal;
+	}
+	#tagline {
+		padding: 20px 30px !important;
+	}
+
+{% endif %}
+
+#cost {
+	color: #000;
+}
+
+/* Slim fixes (final page) */
+#container.slim {
+	width: 600px;
+}
+#container.slim #header {
+	width: 600px;
+	background: #fff;
+}
+#container.slim #main {
+	padding: 0 13px;
+	width: 600px;
+}
+#container.slim #footer {
+	width: 600px;
+}

@@ -1,0 +1,117 @@
+{% capture this_product_handle %}{{ product.handle }}{% endcapture %}
+{% capture this_product_tag %}{{ product.tags | last}}{% endcapture %}
+
+{% assign related_counter = '' %}
+{% assign related_products = '' %}
+
+{% if collection.handle != blank %}
+
+<div id="related"><div id="related-2">
+
+	<h2>{% if settings.related.size > 0 %}{{ settings.related | escape }}{% else %}Related Products{% endif %}</h2>
+	<div id="slider" class="clear">
+		<!--<div id="slider-controls">
+			<div id="slider-prev"><a href="/collections/all" class="inactive">Previous</a>	</div>
+			<div id="slider-next"><a href="/collections/all">Next</a></div>
+		</div>-->
+		<div id="window">
+			<div class="product-list">
+				
+			<!-- Go through any predefined related items (show items from any collection [containing 'related'] that this product belongs to) -->
+            {% assign: thisproduct = product.handle %} 
+            {% for collection in product.collections %}
+                {% if collection.handle contains "related" %}
+                    
+            	    {% for product in collection.products %}
+			            {% unless product.handle == thisproduct %}
+
+    					<div class="product">
+							{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+							<div class="product-overlay"><a href="{{ product.url | within: collection }}"></a></div>
+							<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ product.url | within: collection }}"><img src="{{ product.images[0] | product_img_url: settings.product_image_style }}" alt="{{ product.title | escape }}" /></a></td></tr></table></div>
+							<ul class="product-details">
+								<li class="product-details-title"><h3><a href="{{ product.url | within: collection }}">{{ product.title | escape }}</a></h3></li>
+								<li class="product-details-price">
+									{% if product.compare_at_price_max > product.price %}<s>{{ product.compare_at_price_max | money }}</s>{% endif %} 
+									{{ product.price | money }}{% if settings.product_range %}{% if product.price_varies %} - {{ product.price_max | money }}{% endif %}{% endif %}
+								</li>
+							</ul>
+						</div>
+						{% capture related_counter %}{{ related_counter }}+{% endcapture %}
+						{% capture related_products %}{{ related_products }},{{ product.handle }}{% endcapture %}
+
+                        {% endunless %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+			
+			<!-- Go through parent collection + active tag -->
+			{% if this_product_tag.size > 0 %}
+			
+			{% for product in collection.products limit:100 %}
+			
+				{% unless product.handle == this_product_handle or related_products contains product.handle %}
+				
+					{% if product.tags contains this_product_tag and related_counter.size < 4 %}
+
+						<div class="product">
+							{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+							<div class="product-overlay"><a href="{{ product.url | within: collection }}"></a></div>
+							<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ product.url | within: collection }}"><img src="{{ product.images[0] | product_img_url: settings.product_image_style }}" alt="{{ product.title | escape }}" /></a></td></tr></table></div>
+							<ul class="product-details">
+								<li class="product-details-title"><h3><a href="{{ product.url | within: collection }}">{{ product.title | escape }}</a></h3></li>
+								<li class="product-details-price">
+									{% if product.compare_at_price_max > product.price %}<s>{{ product.compare_at_price_max | money }}</s>{% endif %} 
+									{{ product.price | money }}{% if settings.product_range %}{% if product.price_varies %} - {{ product.price_max | money }}{% endif %}{% endif %}
+								</li>
+							</ul>
+						</div>
+						{% capture related_counter %}{{ related_counter }}+{% endcapture %}
+						{% capture related_products %}{{ related_products }},{{ product.handle }}{% endcapture %}
+					
+					{% endif %}
+				
+				{% endunless %}
+				
+			{% endfor %}
+			
+			{% endif %}
+			
+			<!-- Go through parent collection -->
+			{% if related_counter.size < 4 %}
+			
+			{% for product in collection.products limit:20 %}
+			
+				{% unless product.handle == this_product_handle or related_products contains product.handle %}
+				
+					{% if related_counter.size < 4 %}
+
+						<div class="product">
+							{% if product.compare_at_price_max > product.price %}<div class="product-sale"><span>Sale</span></div>{% endif %}
+							<div class="product-overlay"><a href="{{ product.url | within: collection }}"></a></div>
+							<div class="product-image"><table cellspacing="0"><tr><td><a href="{{ product.url | within: collection }}"><img src="{{ product.images[0] | product_img_url: settings.product_image_style }}" alt="{{ product.title | escape }}" /></a></td></tr></table></div>
+							<ul class="product-details">
+								<li class="product-details-title"><h3><a href="{{ product.url | within: collection }}">{{ product.title | escape }}</a></h3></li>
+								<li class="product-details-price">
+									{% if product.compare_at_price_max > product.price %}<s>{{ product.compare_at_price_max | money }}</s>{% endif %} 
+									{{ product.price | money }}{% if settings.product_range %}{% if product.price_varies %} - {{ product.price_max | money }}{% endif %}{% endif %}
+								</li>
+							</ul>
+						</div>
+						{% capture related_counter %}{{ related_counter }}+{% endcapture %}
+						{% capture related_products %}{{ related_products }},{{ product.handle }}{% endcapture %}
+					
+					{% endif %}
+				
+				{% endunless %}
+				
+			{% endfor %}
+			
+			{% endif %}
+			</div>
+		</div>
+	</div>
+	
+</div></div>
+
+{% endif %}
