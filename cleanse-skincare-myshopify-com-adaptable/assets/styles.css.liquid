@@ -526,21 +526,34 @@ p a {
 #nav li ul {
 	display: none;
     position: absolute;
-    margin: 4px 0 0 -8px;
+    /*margin: 4px 0 0 -8px;*/
+    margin: 5px;
     width: 200px;
-    background: #fff;
-    border-bottom: 5px solid #B8162E;
-    box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);
+    background: url({{ 'details-bg.png' | asset_url }}) no-repeat scroll -173px 0px transparent;
+    /*border-bottom: 5px solid #B8162E;*/
+    /*box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);
     -moz-box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);
-    padding: 5px 0;
+    -webkit-box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);*/
+    padding-top: 13px;
     z-index: 10;
+    text-transform: uppercase;
+    font-size: 8px;
 }
 #nav li ul li {
     padding: 2px 12px 2px 11px;
     float: none;
 }
+
+/*
 #nav li ul li a {
+	color:#ffffff;
+	font-size: 11px;
+	font-style: normal;
+	line-height: 18px;
+	padding: 3px 10px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	
     font-family: Helvetica,Arial,sans-serif;
     font-size: 14px;
     color: #000;
@@ -550,10 +563,17 @@ p a {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    
 }
+*/
+
+/*
 #nav li ul li a:hover {
     background: #f4f4f4 !important;
 }
+*/
+
+
 #nav li ul li.active a {
 	background: #f4f4f4 !important;
 }
